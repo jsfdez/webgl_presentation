@@ -7,9 +7,56 @@ Presentation {
 
     property real fontScale: 0.7
 
+    Rectangle {
+        id: topBar
+        visible: currentSlide == 0 || currentSlide == slides.length - 1
+        color: "#09102c"
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: parent.height * 0.222
+        Rectangle {
+            x: -width / 2
+            y: -height / 2
+            color: "white"
+            width: presentation.width * 0.036
+            height: width
+            rotation: 45
+        }
+
+        Rectangle {
+            x: presentation.width - width / 2
+            y: parent.height - height / 2
+            color: "white"
+            width: presentation.width * 0.036
+            height: width
+            rotation: 360 - 45
+        }
+
+        Image {
+            x: presentation.width * 0.049
+            height: topBar.height
+            width: (540 / 1920) * presentation.width
+            source: "world_summit_logo.png"
+        }
+    }
+
+    Rectangle {
+        id: separator
+        visible: currentSlide != 0 && currentSlide != slides.length - 1
+        x: (80 / 1920) * presentation.width
+        y: (988 / 1080) * presentation.height
+        color: "#f3f3f3"
+        width: (1775 / 1920) * presentation.width
+        height: (3 / 1080) * presentation.height
+    }
+
     Image {
-        anchors.fill: parent
-        source: "background.png"
+        visible: currentSlide != 0 && currentSlide != slides.length - 1
+        x: (1542 / 1920) * presentation.width
+        height: (59 / 1080) * presentation.height
+        width: (230 / 1980) * presentation.width
+        anchors.bottom: parent.bottom
+        source: "world_summit_logo2.png"
     }
 
     FontLoader {
@@ -25,8 +72,17 @@ Presentation {
     fontFamily: titilium.name
     codeFontFamily: titiliumLight.name
 
-    SlideCounter {}
-    Clock {}
+    SlideCounter {
+        anchors.rightMargin:  presentation.width - separator.width - separator.x
+        visible: currentSlide != 0 && currentSlide != slides.length - 1
+        textColor: "#bfc0c0"
+        text: currentSlide + 1
+    }
+    Clock {
+        anchors.leftMargin: separator.x
+        visible: currentSlide != 0 && currentSlide != slides.length - 1
+        textColor: "#bfc0c0"
+    }
 
     Slide {
         centeredText: "<h1>Qt WebGL Streaming</h1><br>" +
@@ -59,7 +115,7 @@ Presentation {
     Slide {
         title: "What's Qt WebGL Streaming?"
 
-        centeredText: "Enables streaming of Qt applications using OpenGLES2"
+        centeredText: "Enables streaming of Qt applications using OpenGLES2 (*)"
     }
 
     Slide {
@@ -79,7 +135,7 @@ Presentation {
         content: [
             "Qt Platform Abstraction (QPA) Plugin",
             "Minimal WebServer",
-            "QtWebSocketServer",
+            "QWebSocketServer",
             "JavaScript",
             "WebGL"
         ]
@@ -90,7 +146,7 @@ Presentation {
         content: [
             "Set of interfaces to customize the behaviour of the Qt applications",
             "It's a way to support different OS without changing Qt code",
-            "Determines how to open windows",
+            "It determines how to open windows",
             "It resolves the OpenGL function pointers"
         ]
     }
@@ -99,13 +155,13 @@ Presentation {
         title: "The WebServer"
         content: [
             "It uses Qt",
-            "It sends the Javascript and edits it to set and some custom routes",
-            "It's a temporary solution"
+            "It is used to send the basic files",
+            "It's a temporary solution. It will be replaced"
         ]
     }
 
     Slide {
-        title: "QtWebsocketServer"
+        title: "QWebsocketServer"
         content: [
             "Connects the application and the browser",
             "Sends the GLES2 calls in a binary format",
@@ -136,7 +192,7 @@ Presentation {
     }
 
     Slide {
-        centeredText: "OK, where are the particles?"
+        centeredText: "OK, where are the particle effects?"
     }
 
     Slide {
@@ -145,22 +201,13 @@ Presentation {
         ParticleSystem {
             clip: true
             id: root
-//            width: 320
-//            height: 480
             anchors.fill: parent
+
             Rectangle {
                 z: -1
                 anchors.fill: parent
                 color: "black"
-                Text {
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.pixelSize: 14
-                    color: "white"
-                    text: "It's all in the fragment shader."
-                }
             }
-
             Emitter {
                 emitRate: 400
                 lifeSpan: 8000
@@ -226,7 +273,7 @@ Presentation {
             "Qt OpenGL",
             "Single user",
             " What?",
-            " Why? I want to create multiuser web applications! >:-|"
+            " Why? I want to create multiuser web applications! 😠"
         ]
     }
 
@@ -247,12 +294,32 @@ Presentation {
             "A dedicated HTTP Server application will be provided",
             " Instead of running all the users in the same process a new process will be spawned " +
                 "per user",
-            " The new process will inherit the web socket created by the browser"
+            " The new process will handle the web socket"
         ]
     }
 
     CodeSlide {
-        title: "Show me the code!"
+        id: codeSlide
+        Image {
+            source: "showme.png"
+            z: -1
+            anchors.verticalCenter: parent.verticalCenter
+            NumberAnimation on opacity {
+                running: codeSlide.visible
+                from: 0.0
+                to: 1.0
+                duration: 90000
+            }
+
+            NumberAnimation on scale {
+                running: codeSlide.visible
+                from: 0.0
+                to: 1.0
+                duration: 90000
+            }
+        }
+
+        title: "Show me some code"
         code: "        gl._attachShader = gl.attachShader;
         gl.attachShader = function(program, shader) {
             var d = contextData[currentContext];
@@ -331,10 +398,53 @@ Presentation {
     }
 
     Slide {
-        AnimatedImage {
-            source: "http://gclipart.com/wp-content/uploads/2017/03/Question-mark-clipart-transparent-background.gif"
-            onStatusChanged: playing = (status == AnimatedImage.Ready)
-            anchors.centerIn: parent
+        Text {
+            text: "❓"
+            font.family: "EmojiOne Color"
+            font.pixelSize: (1000 / 1920) * presentation.height
+            x: parent.width / 2 - width / 2
+            y: parent.height / 2 - height / 2 - (100 / 1920) * presentation.height
+
+            Timer {
+                id: timer
+                interval: 100
+                running: parent.parent.visible
+                repeat: true
+                onTriggered: {
+                    parent.x = (parent.parent.width / 2 - parent.width / 2 )
+                            + (Math.random() * (50) - 25)
+                    parent.y = (parent.parent.height / 2 - parent.height / 2 )
+                            + (Math.random() * (50) - 25) - (100 / 1920) * presentation.height
+                }
+            }
+
+            style: Text.Outline
+            styleColor: "red"
         }
+
+//        Image {
+//            id: questionImage
+//            source: "http://gclipart.com/wp-content/uploads/2017/03/Question-mark-clipart-transparent-background.gif"
+//            x: parent.width / 2 - width / 2
+//            y: parent.height / 2 - height / 2
+
+//            Timer {
+//                id: timer
+//                interval: 100
+//                running: parent.parent.visible
+//                repeat: true
+//                onTriggered: {
+//                    parent.x = (parent.parent.width / 2 - parent.width / 2 )
+//                            + (Math.random() * (50) - 25)
+//                    parent.y = (parent.parent.height / 2 - parent.height / 2 )
+//                            + (Math.random() * (50) - 25)
+//                }
+//            }
+//        }
+    }
+
+    Slide {
+        fontScale: 2.0
+        centeredText: "Thank you!"
     }
 }
