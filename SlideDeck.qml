@@ -421,27 +421,7 @@ Presentation {
             style: Text.Outline
             styleColor: "red"
         }
-
-//        Image {
-//            id: questionImage
-//            source: "http://gclipart.com/wp-content/uploads/2017/03/Question-mark-clipart-transparent-background.gif"
-//            x: parent.width / 2 - width / 2
-//            y: parent.height / 2 - height / 2
-
-//            Timer {
-//                id: timer
-//                interval: 100
-//                running: parent.parent.visible
-//                repeat: true
-//                onTriggered: {
-//                    parent.x = (parent.parent.width / 2 - parent.width / 2 )
-//                            + (Math.random() * (50) - 25)
-//                    parent.y = (parent.parent.height / 2 - parent.height / 2 )
-//                            + (Math.random() * (50) - 25)
-//                }
-//            }
-//        }
-    }
+   }
 
     Slide {
         fontScale: 2.0
